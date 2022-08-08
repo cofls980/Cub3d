@@ -1,6 +1,6 @@
 #include "../include/cub3d.h"
 
-int worldMap[mapWidth][mapHeight]=
+/*int worldMap[mapWidth][mapHeight]=
 {
   {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
   {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
@@ -26,9 +26,37 @@ int worldMap[mapWidth][mapHeight]=
   {1,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
   {1,4,4,4,4,4,4,4,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
   {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
+};*/
+
+int worldMap[mapWidth][mapHeight]=
+{
+  {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+  {1,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,1},
+  {1,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,1},
+  {1,0,0,1,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,1},
+  {1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+  {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
 };
 
-void init(t_cub *cub)
+void init(t_cub *cub) // 구조체 초기화
 {
 	cub->mlx = mlx_init();
 	cub->win = mlx_new_window(cub->mlx, WIN_WIDTH, WIN_HEIGHT, "Hello world!");
@@ -42,17 +70,86 @@ void init(t_cub *cub)
 	cub->moveSpeed = 0.05;
 }
 
+void	draw(t_cub *info)
+{
+	for (int y = 0; y < WIN_HEIGHT; y++)
+	{
+		for (int x = 0; x < WIN_WIDTH; x++)
+		{
+			info->img.data[y * WIN_WIDTH + x] = info->buf[y][x];// 한 줄에 있으므로
+		}
+	}
+	mlx_put_image_to_window(info->mlx, info->win, info->img.img, 0, 0);
+}
+
 int main_loop(t_cub *cub)
 {
 	raycasting(cub);
+	draw(cub);
 
 	return (0);
+}
+
+void	load_image(t_cub *info, int *texture, char *path, t_img *img)
+{
+	img->img = mlx_xpm_file_to_image(info->mlx, path, &img->img_width, &img->img_height);
+	img->data = (int *)mlx_get_data_addr(img->img, &img->bpp, &img->size_l, &img->endian);
+	for (int y = 0; y < img->img_height; y++)
+	{
+		for (int x = 0; x < img->img_width; x++)
+		{
+			texture[img->img_width * y + x] = img->data[img->img_width * y + x];
+		}
+	}
+	mlx_destroy_image(info->mlx, img->img);
+}
+
+void	load_texture(t_cub *info)
+{
+	t_img	img;
+
+	load_image(info, info->texture[0], "textures/eagle.xpm", &img);
+	load_image(info, info->texture[1], "textures/redbrick.xpm", &img);
+	load_image(info, info->texture[2], "textures/purplestone.xpm", &img);
+	load_image(info, info->texture[3], "textures/wood.xpm", &img);
 }
 
 int main(int argc, char **argv)
 {
 	t_cub cub;
 	init(&cub);
+
+	for (int i = 0; i < WIN_HEIGHT; i++)
+	{
+		for (int j = 0; j < WIN_WIDTH; j++)
+		{
+			cub.buf[i][j] = 0;
+		}
+	}
+
+	if (!(cub.texture = (int **)malloc(sizeof(int *) * 4)))
+		return (-1);
+	for (int i = 0; i < 4; i++)
+	{
+		if (!(cub.texture[i] = (int *)malloc(sizeof(int) * (texHeight * texWidth))))
+			return (-1);
+	}
+	for (int i = 0; i < 4; i++)
+	{
+		for (int j = 0; j < texHeight * texWidth; j++)
+		{
+			cub.texture[i][j] = 0;
+		}
+	}
+
+	load_texture(&cub);
+
+	cub.moveSpeed = 0.05;
+	cub.rotSpeed = 0.05;
+
+	cub.img.img = mlx_new_image(cub.mlx, WIN_WIDTH, WIN_HEIGHT);
+	cub.img.data = (int *)mlx_get_data_addr(cub.img.img, &cub.img.bpp, &cub.img.size_l, &cub.img.endian);
+
 
 	//raycasting(&cub);
 	mlx_loop_hook(cub.mlx, &main_loop, &cub);
@@ -130,20 +227,122 @@ int key_press(int keycode, t_cub *cub)
 	return (0);
 }
 
-void	verLine(t_cub *cub, int x, int y1, int y2, int color)
+void casting_floor_ceiling(t_cub *cub)
 {
-	int	y;
+	int y;
 
-	y = y1;
-	while (y <= y2)
+    //Floor Casting
+    y = 0;
+    while (y < WIN_HEIGHT)
+    {
+        // rayDir for leftmost ray (x = 0) and rightmost ray (x = w)
+		float rayDirX0 = cub->dirX - cub->planeX;
+		float rayDirY0 = cub->dirY - cub->planeY;
+		float rayDirX1 = cub->dirX + cub->planeX;
+		float rayDirY1 = cub->dirY + cub->planeY;
+
+        // Current y position compared to the center of the screen (the horizon)
+		int p = y - WIN_HEIGHT / 2;
+
+		// Vertical position of the camera.
+		float posZ = 0.5 * WIN_HEIGHT;
+
+		// Horizontal distance from the camera to the floor for the current row.
+		// 0.5 is the z position exactly in the middle between floor and ceiling.
+		float rowDistance = posZ / p;
+
+		// calculate the real world step vector we have to add for each x (parallel to camera plane)
+		// adding step by step avoids multiplications with a weight in the inner loop
+		float floorStepX = rowDistance * (rayDirX1 - rayDirX0) / WIN_WIDTH;
+		float floorStepY = rowDistance * (rayDirY1 - rayDirY0) / WIN_WIDTH;
+
+		// real world coordinates of the leftmost column. This will be updated as we step to the right.
+		float floorX = cub->posX + rowDistance * rayDirX0;
+		float floorY = cub->posY + rowDistance * rayDirY0;
+
+        for(int x = 0; x < WIN_WIDTH; ++x)
+		{
+			// the cell coord is simply got from the integer parts of floorX and floorY
+			int cellX = (int)(floorX);
+			int cellY = (int)(floorY);
+
+			// get the texture coordinate from the fractional part
+			int tx = (int)(texWidth * (floorX - cellX)) & (texWidth - 1);
+			int ty = (int)(texHeight * (floorY - cellY)) & (texHeight - 1);
+
+			floorX += floorStepX;
+			floorY += floorStepY;
+
+			// choose texture and draw the pixel
+			int floorTexture = 0;
+			int ceilingTexture = 1;
+
+			int color;
+
+			// floor
+			color = 0x004C99;//cub->texture[floorTexture][texWidth * ty + tx];
+			//color = (color >> 1) & 8355711; // make a bit darker
+
+			cub->buf[y][x] = color;
+
+			//ceiling (symmetrical, at screenHeight - y - 1 instead of y)
+			color = 0x3399FF;cub->texture[ceilingTexture][texWidth * ty + tx];
+			//color = (color >> 1) & 8355711; // make a bit darker
+
+			cub->buf[WIN_HEIGHT - y - 1][x] = color;
+		}
+        y++;
+    }
+}
+
+void texturing_walls(t_cub *cub, int x, int mapX, int mapY, int side, double perpWallDist,\
+					double rayDirX, double rayDirY, int lineHeight, int drawStart, int drawEnd)
+{
+	// texturing calculations
+	int texNum = worldMap[mapX][mapY]; //맵 상의 텍스쳐 종류
+
+	// calculate value of wallX
+	// 벽의 int형 좌표가 아닌 double형 좌표로 벽의 정확히 어디에 부딪혔는지 나타낸다.
+	// 텍스처를 적용할 때 어떤 x좌표를 사용해야하는지 판단할 떄 사용한다.
+	double wallX;
+	if (side == 0)
+		wallX = cub->posY + perpWallDist * rayDirY; //?
+	else
+		wallX = cub->posX + perpWallDist * rayDirX; //?
+	// 부딪힌 곳의 정확한 x, y값(double)에서 벽의 x, y값(int)을 빼서 판단할 수 있다.
+	wallX -= floor(wallX);
+
+	// x coordinate on the texture
+	// 텍스처의 x좌표를 나타내는 texX 계산
+	int texX = (int)(wallX * (double)texWidth);
+	if (side == 0 && rayDirX > 0)
+		texX = texWidth - texX - 1;
+	if (side == 1 && rayDirY < 0)
+		texX = texWidth - texX - 1;
+
+	// How much to increase the texture coordinate perscreen pixel
+	// 텍스처의 좌표를 수직선 상에 있는 좌표에 대해 얼마나 늘려야 하는지에 따라 결정된다.
+	double step = 1.0 * texHeight / lineHeight;
+	// Starting texture coordinate
+	double texPos = (drawStart - WIN_HEIGHT / 2 + lineHeight / 2) * step;
+	// 각 픽셀이 텍스처의 어떤 y 좌표 texY를 갖게 할 건지 정해주기 위해 y방향 반복문 실행
+	for (int y = drawStart; y < drawEnd; y++)
 	{
-		mlx_pixel_put(cub->mlx, cub->win, x, y, color);
-		y++;
+		// Cast the texture coordinate to integer, and mask with (texHeight - 1) in case of overflow
+		int texY = (int)texPos & (texHeight - 1);
+		texPos += step;
+		int color = cub->texture[texNum][texHeight * texY + texX];
+		// make color darker for y-sides: R, G and B byte each divided through two with a "shift" and an "and"
+		/*if (side == 1)
+			color = (color >> 1) & 8355711;*/
+		cub->buf[y][x] = color;
 	}
 }
 
 void raycasting(t_cub *cub)
 {
+	casting_floor_ceiling(cub);
+
 	int	x;
 
 	x = 0;
@@ -217,7 +416,7 @@ void raycasting(t_cub *cub)
 
 		int lineHeight = (int)(WIN_HEIGHT / perpWallDist);//Height자리는 바꿀 수 있다. 일정한 벽의 높이, 너비 및 깊이를 가진 박스처럼 보이게 해주고, 값이 클수록 높이가 높은 박스를 만들어준다.
 
-		//calculate lowest and highest pixel to fill in current stripe
+		// calculate lowest and highest pixel to fill in current stripe
 		// 벽의 중심은 화면의 중심에 있어야하고, 이 중심점이 화면 범위 아래에 놓여있다면 0으로, 화면 범위 밖에 놓여있다면 h - 1로 덮어씌운다.
 		int drawStart = -lineHeight / 2 + WIN_HEIGHT / 2;
 		if(drawStart < 0)
@@ -226,23 +425,7 @@ void raycasting(t_cub *cub)
 		if(drawEnd >= WIN_HEIGHT)
 			drawEnd = WIN_HEIGHT - 1;
 
-		int color;
-		if (worldMap[mapY][mapX] == 1)
-			color = 0xFF0000;
-		else if (worldMap[mapY][mapX] == 2)
-			color = 0x00FF00;
-		else if (worldMap[mapY][mapX] == 3)
-			color = 0x0000FF;
-		else if (worldMap[mapY][mapX] == 4)
-			color = 0xFFFFFF;
-		else
-			color = 0xFFFF00;
-
-		if(side == 1)
-			color = color / 2;
-
-		verLine(cub, x, drawStart, drawEnd, color);
-
+		texturing_walls(cub, x, mapX, mapY, side, perpWallDist, rayDirX, rayDirY, lineHeight, drawStart, drawEnd);
 		x++;
 	}
 }

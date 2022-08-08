@@ -1,5 +1,5 @@
 NAME= cub3d
-SRC = src/main.c
+SRC = src/main_txt.c# main_floor_ceiling main_fc main_txt
 OBJ = $(SRC:%.c=%.o)
 
 MLX_DIR = ./minilibx-linux
@@ -39,3 +39,6 @@ bonus: $(OBJ_BONUS)
 	$(CC) $(CFLAGS) -o $(NAME) $^
 
 .PHONY: all clean fclean re bonus
+
+#https://github.com/l-yohai/cub3d/blob/master/mlx_example/01_untextured_raycast.c
+#https://github.com/365kim/raycasting_tutorial/blob/master/3_untextured_raycaster.md
